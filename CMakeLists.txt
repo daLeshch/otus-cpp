@@ -3,26 +3,25 @@ cmake_minimum_required(VERSION 3.12)
 set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
 set(PROJECT_VESRION 0.0.${PATCH_VERSION})
 
-project(homework_01 VERSION ${PROJECT_VESRION})
+project(homework_02 VERSION ${PROJECT_VESRION})
 
 option(WITH_BOOST_TEST "Whether to build Boost test" ON)
 
 configure_file(version.h.in version.h)
 
-add_executable(homework_01_cli main.cpp)
-add_library(homework_01 lib.cpp)
+add_executable(homework_02_cli ip_filter.cpp)
 
-set_target_properties(homework_01_cli homework_01 PROPERTIES
+set_target_properties(homework_02_cli homework_02 PROPERTIES
     CXX_STANDARD 14
     CXX_STANDARD_REQUIRED ON
 )
 
-target_include_directories(homework_01
+target_include_directories(homework_02
     PRIVATE "${CMAKE_BINARY_DIR}"
 )
 
-target_link_libraries(homework_01_cli PRIVATE
-    homework_01
+target_link_libraries(homework_02_cli PRIVATE
+    homework_02
 )
 
 if(WITH_BOOST_TEST)
@@ -41,15 +40,15 @@ if(WITH_BOOST_TEST)
 
     target_link_libraries(test_version
         ${Boost_LIBRARIES}
-        homework_01
+        homework_02
     )
 endif()
 
 if (MSVC)
-    target_compile_options(homework_01_cli PRIVATE
+    target_compile_options(homework_02_cli PRIVATE
         /W4
     )
-    target_compile_options(homework_01 PRIVATE
+    target_compile_options(homework_02 PRIVATE
         /W4
     )
     if(WITH_BOOST_TEST)
@@ -58,10 +57,10 @@ if (MSVC)
         )
     endif()
 else ()
-    target_compile_options(homework_01_cli PRIVATE
+    target_compile_options(homework_02_cli PRIVATE
         -Wall -Wextra -pedantic -Werror
     )
-    target_compile_options(homework_01 PRIVATE
+    target_compile_options(homework_02 PRIVATE
         -Wall -Wextra -pedantic -Werror
     )
     if(WITH_BOOST_TEST)
@@ -71,7 +70,7 @@ else ()
     endif()
 endif()
 
-install(TARGETS homework_01_cli RUNTIME DESTINATION bin)
+install(TARGETS homework_02_cli RUNTIME DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
 set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
