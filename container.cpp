@@ -165,9 +165,7 @@ int main(){
 
     using alloc_type = SimpAllocator<std::pair<const int,int>>;
 
-    alloc_type map_alloc(10, true);
-
-    map<int, int, less<int>, alloc_type> map_custom_alloc(map_alloc);
+    map<int, int, less<int>, alloc_type> map_custom_alloc;
     for (int v = 0; v <=9; ++v){
         map_custom_alloc[v] = factorial(v);
     }
