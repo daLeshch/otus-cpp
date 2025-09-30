@@ -1,27 +1,25 @@
 cmake_minimum_required(VERSION 3.12)
 
 set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
-set(PROJECT_VESRION 0.0.${PATCH_VERSION})
+set(PROJECT_VERSION 0.0.${PATCH_VERSION})
 
-project(homework_02 VERSION ${PROJECT_VESRION})
+project(homework_02 VERSION ${PROJECT_VERSION})
 
 option(WITH_BOOST_TEST "Whether to build Boost test" ON)
 
 configure_file(version.h.in version.h)
 
+
+add_library(homework_02 lib.cpp)
+target_include_directories(homework_02 PUBLIC "${CMAKE_BINARY_DIR}")
+
+
 add_executable(homework_02_cli ip_filter.cpp)
+target_link_libraries(homework_02_cli PRIVATE homework_02)
 
 set_target_properties(homework_02_cli homework_02 PROPERTIES
     CXX_STANDARD 14
     CXX_STANDARD_REQUIRED ON
-)
-
-target_include_directories(homework_02
-    PRIVATE "${CMAKE_BINARY_DIR}"
-)
-
-target_link_libraries(homework_02_cli PRIVATE
-    homework_02
 )
 
 if(WITH_BOOST_TEST)
@@ -33,10 +31,8 @@ if(WITH_BOOST_TEST)
         CXX_STANDARD_REQUIRED ON
     )
 
-    set_target_properties(test_version PROPERTIES
-        COMPILE_DEFINITIONS BOOST_TEST_DYN_LINK
-        INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
-    )
+    target_include_directories(test_version PRIVATE ${Boost_INCLUDE_DIR})
+    target_compile_definitions(test_version PRIVATE BOOST_TEST_DYN_LINK)
 
     target_link_libraries(test_version
         ${Boost_LIBRARIES}
@@ -45,28 +41,16 @@ if(WITH_BOOST_TEST)
 endif()
 
 if (MSVC)
-    target_compile_options(homework_02_cli PRIVATE
-        /W4
-    )
-    target_compile_options(homework_02 PRIVATE
-        /W4
-    )
+    target_compile_options(homework_02_cli PRIVATE /W4)
+    target_compile_options(homework_02 PRIVATE /W4)
     if(WITH_BOOST_TEST)
-        target_compile_options(test_version PRIVATE
-            /W4
-        )
+        target_compile_options(test_version PRIVATE /W4)
     endif()
 else ()
-    target_compile_options(homework_02_cli PRIVATE
-        -Wall -Wextra -pedantic -Werror
-    )
-    target_compile_options(homework_02 PRIVATE
-        -Wall -Wextra -pedantic -Werror
-    )
+    target_compile_options(homework_02_cli PRIVATE -Wall -Wextra -pedantic -Werror)
+    target_compile_options(homework_02 PRIVATE -Wall -Wextra -pedantic -Werror)
     if(WITH_BOOST_TEST)
-        target_compile_options(test_version PRIVATE
-            -Wall -Wextra -pedantic -Werror
-        )
+        target_compile_options(test_version PRIVATE -Wall -Wextra -pedantic -Werror)
     endif()
 endif()
 
