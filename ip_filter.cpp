@@ -31,22 +31,13 @@ void ip_print(const ip_array& ip)
 int main(int argc, const char* argv[])
 {
     try {
-        std::string path;
         std::string line;
         std::vector<ip_array> ip_lib;
 
-        std::cout << "Please, enter test file path:" << "\n";
-        std::cin >> path;
-
-        std::ifstream file(path);
-
-        if (!file.is_open()) {
-            std::cerr << "File was not opened!\n";
-            return 1;
-        }
-
-        while (std::getline(file, line)) {
-            ip_lib.push_back(ip_prep(line));
+        while (std::getline(std::cin, line)) {
+            if (!line.empty()) {
+                ip_lib.push_back(ip_prep(line));
+            }
         }
 
         std::sort(ip_lib.begin(), ip_lib.end(), std::greater<ip_array>());
